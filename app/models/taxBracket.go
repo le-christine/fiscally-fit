@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 )
 
 type TaxBracket struct {
@@ -12,13 +13,15 @@ type TaxBracket struct {
 	Rate float64 `json:"rate"`
 }
 
-type TaxBracketsByYear struct {
+type TaxBrackets struct {
 	TaxBrackets []TaxBracket `json:"tax_brackets"`
 }
 
-var AllTaxBrackets []TaxBracketsByYear
+var AllTaxBrackets map[int]TaxBrackets
 
 func init() {
+	AllTaxBrackets = make(map[int]TaxBrackets)
+
 	fmt.Println("Application initializing... querying tax brackets data")
 
 	// Years supported by Mock API
@@ -27,35 +30,32 @@ func init() {
 	for _, year := range years {
 		url := fmt.Sprintf("http://localhost:5000/tax-calculator/tax-year/%d", year)
 
-		resp, err := http.Get(url)
-		if err != nil {
-			fmt.Println("There was an error fetching from", url, "err: ", err);
+		//try 3 times in case error occurs
+		for i := 0; i < 3; i++ {
+
+			resp, err := http.Get(url)
+
+			if err != nil {
+				fmt.Println("There was an error fetching from", url, "err: ", err);
+			}
+
+			if resp.StatusCode == 200 {
+
+				var taxBracket TaxBrackets
+				err = json.NewDecoder(resp.Body).Decode(&taxBracket)
+				if err != nil {
+					fmt.Println("Error while reading response body", err)
+				} else {
+					AllTaxBrackets[year] = taxBracket
+					fmt.Println("Successfully added tax bracket for year: ", year)
+					fmt.Println("all tax brackets->",AllTaxBrackets)
+					break // successful response, exit loop
+				}
+			} else {
+				fmt.Println("There was an error fetching from", url, "resp code: ", resp.StatusCode);
+			}
+			fmt.Println("Retrying ", url)
+			time.Sleep(2 * time.Second) // wait before retrying
 		}
-
-		fmt.Println(resp.Body)
-		decoder := json.NewDecoder(resp.Body)
-
-		var t TaxBracketsByYear
-		err = decoder.Decode(&t)
-		if err != nil {
-			fmt.Println("Error while reading response body", err)
-		}
-		fmt.Println(t.TaxBrackets)
-
-		// try 3 times in case error occurs
-		//for i := 0; i < 3; i++ { // try 3 times
-		//	body, err := http.Get(url)
-		//	if err == nil {
-		//		defer body.Body.Close()
-		//		var taxBrackets []TaxBracket
-		//		err = json.NewDecoder(body.Body).Decode(&taxBrackets)
-		//		if err == nil {
-		//			AllTaxBrackets = append(AllTaxBrackets, TaxBracketsByYear{Year: year, TaxBrackets: taxBrackets})
-		//			fmt.Println("Successfully added tax bracket for year: ", year)
-		//			break // successful response, exit loop
-		//		}
-		//	}
-		//	time.Sleep(2 * time.Second) // wait before retrying
-		//}
 	}
 }
