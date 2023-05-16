@@ -12,7 +12,7 @@ import (
 func main() {
 	log.Println("Tax Calculator Application Starting")
 
-	taxService := services.NewTaxService(models.TaxBracket{})
+	taxService := services.NewTaxService(models.AllTaxBrackets)
 	taxHandler := handlers.NewTaxHandler(taxService)
 
 	api := mux.NewRouter()

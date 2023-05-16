@@ -7,14 +7,13 @@ import (
 	"time"
 )
 
-type TaxBracket struct {
-	Min  int     `json:"min"`
-	Max  int     `json:"max"`
-	Rate float64 `json:"rate"`
-}
 
 type TaxBrackets struct {
-	TaxBrackets []TaxBracket `json:"tax_brackets"`
+	TaxBrackets []struct {
+		Min  float64     `json:"min"`
+		Max  *float64     `json:"max,omitempty"`
+		Rate float64 `json:"rate"`
+	} `json:"tax_brackets"`
 }
 
 var AllTaxBrackets map[int]TaxBrackets
@@ -48,11 +47,10 @@ func init() {
 				} else {
 					AllTaxBrackets[year] = taxBracket
 					fmt.Println("Successfully added tax bracket for year: ", year)
-					fmt.Println("all tax brackets->",AllTaxBrackets)
 					break // successful response, exit loop
 				}
 			} else {
-				fmt.Println("There was an error fetching from", url, "resp code: ", resp.StatusCode);
+				fmt.Println("There was an error fetching from", url, "resp code: ", resp.StatusCode)
 			}
 			fmt.Println("Retrying ", url)
 			time.Sleep(2 * time.Second) // wait before retrying

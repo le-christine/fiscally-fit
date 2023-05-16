@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"fiscally-fit/app/services"
+	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
@@ -19,8 +20,8 @@ func NewTaxHandler(taxService *services.TaxService) *TaxHandler {
 func (h *TaxHandler) CalculateTax(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 
-	salaryStr := params["income"]
-	salary, err := strconv.ParseFloat(salaryStr, 64)
+	incomeStr := params["income"]
+	income, err := strconv.ParseFloat(incomeStr, 64)
 	if err != nil {
 		http.Error(w, "Invalid salary parameter", http.StatusBadRequest)
 		return
@@ -33,15 +34,14 @@ func (h *TaxHandler) CalculateTax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	taxes, err := h.taxService.CalculateTaxes(salary, year)
+	fmt.Printf("Received request for Calculate Tax, income: %f, year: %d\n", income, year)
+
+	response, err := h.taxService.CalculateTaxes(income, year)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	response := map[string]interface{}{
-		"taxes": taxes,
-	}
 	jsonResponse, err := json.Marshal(response)
 	if err != nil {
 		http.Error(w, "Error marshaling JSON response", http.StatusInternalServerError)
