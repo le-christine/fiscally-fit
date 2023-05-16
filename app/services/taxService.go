@@ -2,42 +2,64 @@ package services
 
 import (
 	"fiscally-fit/app/models"
+	"fmt"
+	"math"
 )
 
 // Responsible for retrieving tax brackets from the mock API and calculating the taxes owed.
 
 type TaxService struct {
-	TaxBrackets models.TaxBracket // Use the updated struct name here
+	TaxBrackets map[int]models.TaxBrackets // Use the updated struct name here
 }
 
-func NewTaxService(brackets models.TaxBracket) *TaxService { // Use the updated struct name here
+func NewTaxService(brackets map[int]models.TaxBrackets) *TaxService { // Use the updated struct name here
 	return &TaxService{
 		TaxBrackets: brackets,
 	}
 }
 
 // CalculateTaxes calculates and displays the total taxes owed for the salary, displays the amount of taxes owed per band, and displays the effective rate.
-func (s *TaxService) CalculateTaxes(salary float64, year int) (float64, error) {
-	// Find the tax brackets for the given year
-	//brackets, ok := s.TaxBrackets[year]
-	//if !ok {
-	//	return 0, fmt.Errorf("no tax brackets found for year %d", year)
-	//}
-	//
-	//// Calculate taxes for each bracket and add them up
-	//var totalTax float64
-	//for _, bracket := range brackets {
-	//	if salary > float64(bracket.Max) {
-	//		totalTax += float64(bracket.Max-bracket.Min) * bracket.Rate
-	//		fmt.Printf("Tax band: $%d to $%d. Tax owed: $%.2f\n", bracket.Min, bracket.Max, float64(bracket.Max-bracket.Min)*bracket.Rate)
-	//	} else if salary > float64(bracket.Min) {
-	//		totalTax += (salary - float64(bracket.Min)) * bracket.Rate
-	//		fmt.Printf("Tax band: $%d to $%.0f. Tax owed: $%.2f\n", bracket.Min, salary, (salary-float64(bracket.Min))*bracket.Rate)
-	//	}
-	//}
-	//
-	//fmt.Printf("Total tax owed: $%.2f\n", totalTax)
-	//fmt.Printf("Effective tax rate: %.2f%%\n", totalTax/salary*100)
+func (s *TaxService) CalculateTaxes(income float64, year int) (map[string]interface{}, error) {
 
-	return 0, nil
+	// Vars to return
+	var totalTax, prev, max float64
+	taxesByBracket := make(map[string]float64)
+
+	//Find the tax brackets for the given year
+	brackets, ok := s.TaxBrackets[year]
+	if !ok {
+		return nil, fmt.Errorf("no tax brackets found for year %d", year)
+	}
+
+
+	for _, bracket := range brackets.TaxBrackets {
+
+		if bracket.Max == nil {
+			max = math.Inf(1)
+		} else {
+			max = *bracket.Max
+		}
+
+		if income <= max || max == 0 {
+			taxableAmount := math.Min(income-bracket.Min, max-bracket.Min)
+			taxesByBracket[fmt.Sprintf("Tax band: $%f to $%f", bracket.Min, max)] = taxableAmount
+			totalTax += taxableAmount * bracket.Rate
+			break
+		} else {
+			taxableAmount := max - prev
+			taxesByBracket[fmt.Sprintf("Tax band: $%f to $%f", bracket.Min, max)] = taxableAmount
+			totalTax += taxableAmount * bracket.Rate
+			prev = max
+		}
+	}
+
+	taxRate := totalTax/income*100
+
+	response := map[string]interface{}{
+		"totalTaxes": totalTax,
+		"effectiveTaxRate": taxRate,
+		"taxesByBracket": taxesByBracket,
+	}
+
+	return response, nil
 }
