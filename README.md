@@ -2,7 +2,7 @@
 
 This is an API for calculating income tax based on salary and tax year. It provides a single endpoint that accepts two query parameters: income and year.
 
-#API Specification
+# API Specification
 
 ```yaml
 openapi: 3.0.0
@@ -11,7 +11,7 @@ info:
   title: Tax Calculator API
   description: An API for calculating income tax based on salary and tax year
 paths:
-  /calculator:
+  /calculate:
     get:
       summary: Calculate income tax for a given salary and tax year
       parameters:
@@ -37,11 +37,11 @@ paths:
               schema:
                 type: object
                 properties:
-                  total_taxes:
+                  totalTaxes:
                     type: number
-                  taxes_per_band:
+                  taxesByBracket:
                     type: object
-                  effective_rate:
+                  effectiveTaxRate:
                     type: number
         '400':
           description: Invalid parameters provided
@@ -50,6 +50,15 @@ paths:
 ```
 
 # Directory Structure
-```
+``` 
+.
+├── README.md
+├── app
+│   ├── handlers // Contains logic for handling HTTP requests
+│   ├── models // Responsible for data representation, storage, and handling
+│   └── services // Interacts with the model layer to perform business logic
+├── go.mod
+├── go.sum
+└── main.go // Entry Point of the application
 
 ```
