@@ -1,0 +1,4 @@
+server:
+  port: 8080
+mockapi:
+  url: http://localhost:5000/tax-calculator/tax-year/
