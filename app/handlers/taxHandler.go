@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
-	"fiscally-fit/app/services"
+	"github.com/le-christine/fiscally-fit/app/services"
 	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"

@@ -1,7 +1,7 @@
 package services
 
 import (
-	"fiscally-fit/app/models"
+	"github.com/le-christine/fiscally-fit/app/models"
 	"reflect"
 	"testing"
 )
