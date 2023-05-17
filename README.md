@@ -2,6 +2,31 @@
 
 This is an API for calculating income tax based on salary and tax year. It provides a single endpoint that accepts two query parameters: income and year.
 
+# Example Usage
+```json
+http://localhost:8080/calculate?income=100000&year=2022
+
+{
+  "effectiveTaxRate":18,
+  "taxesByBracket":
+  { 
+  "Tax band: $0.00 to $50197.00":"$50197.00",
+  "Tax band: $50197.00 to $100392.00":"$49803.00"
+  },
+  "totalTaxes":"$17739.17"}
+```
+
+# How to Run
+## Prerequisites
+A mock API provides tax bracket data by year, which runs on port 5000. 
+
+## Local Install
+There are two options:
+Clone the repo and run the following from the root directory:
+```
+go run main.go
+```
+
 # API Specification
 
 ```yaml
@@ -62,3 +87,10 @@ paths:
 └── main.go // Entry Point of the application
 
 ```
+
+## Testing
+```
+go test app/services
+go test app/config
+```
+
