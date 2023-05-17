@@ -22,9 +22,14 @@ A mock API provides tax bracket data by year, which runs on port 5000.
 
 ## Local Install
 There are two options:
-Clone the repo and run the following from the root directory:
+1. Clone the repo and run the following from the root directory:
 ```
 go run main.go
+```
+
+2. Clone the repo and execute the binary:
+```
+./main
 ```
 
 # API Specification
@@ -89,8 +94,9 @@ paths:
 ```
 
 ## Testing
+From the root directory, run the following:
 ```
-go test app/services
-go test app/config
+go test ./app/services
+go test ./app/config
 ```
 
