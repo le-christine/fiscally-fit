@@ -1,4 +1,4 @@
-module fiscally-fit
+module github.com/le-christine/fiscally-fit
 
 go 1.17
 

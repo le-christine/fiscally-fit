@@ -1,9 +1,9 @@
 package main
 
 import (
-	"fiscally-fit/app/handlers"
-	"fiscally-fit/app/models"
-	"fiscally-fit/app/services"
+	"github.com/le-christine/fiscally-fit/app/handlers"
+	"github.com/le-christine/fiscally-fit/app/models"
+	"github.com/le-christine/fiscally-fit/app/services"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
