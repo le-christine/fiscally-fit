@@ -10,8 +10,8 @@ http://localhost:8080/calculate?income=100000&year=2022
   "effectiveTaxRate":18,
   "taxesByBracket":
   { 
-  "Tax band: $0.00 to $50197.00":"$50197.00",
-  "Tax band: $50197.00 to $100392.00":"$49803.00"
+  "Tax band: $0.00 to $50197.00":"$7529.55",
+  "Tax band: $50197.00 to $100392.00":"$10209.61"
   },
   "totalTaxes":"$17739.17"}
 ```

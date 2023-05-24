@@ -15,9 +15,9 @@ func TestCalculateTaxes(t *testing.T) {
 		"totalTaxes":       "$17991.78",
 		"effectiveTaxRate": 18,
 		"taxesByBracket": map[string]string{
-			"Tax band: $0.00 to $48535.00":      "$48535.00",
-			"Tax band: $48535.00 to $97069.00":  "$48534.00",
-			"Tax band: $97069.00 to $150473.00": "$2931.00",
+			"Tax band: $0.00 to $48535.00":      "$7280.25",
+			"Tax band: $48535.00 to $97069.00":  "$9949.47",
+			"Tax band: $97069.00 to $150473.00": "$762.06",
 		},
 	}
 

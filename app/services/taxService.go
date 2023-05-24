@@ -1,8 +1,8 @@
 package services
 
 import (
-	"github.com/le-christine/fiscally-fit/app/models"
 	"fmt"
+	"github.com/le-christine/fiscally-fit/app/models"
 	"math"
 )
 
@@ -41,13 +41,15 @@ func (s *TaxService) CalculateTaxes(income float64, year int) (map[string]interf
 
 		if income <= max || max == 0 {
 			taxableAmount := math.Min(income-bracket.Min, max-bracket.Min)
-			taxesByBracket[fmt.Sprintf("Tax band: $%.2f to $%.2f", bracket.Min, max)] = fmt.Sprintf("$%.2f", taxableAmount)
-			totalTax += taxableAmount * bracket.Rate
+			taxesOwed := taxableAmount * bracket.Rate
+			taxesByBracket[fmt.Sprintf("Tax band: $%.2f to $%.2f", bracket.Min, max)] = fmt.Sprintf("$%.2f", taxesOwed)
+			totalTax += taxesOwed
 			break
 		} else {
 			taxableAmount := max - prev
-			taxesByBracket[fmt.Sprintf("Tax band: $%.2f to $%.2f", bracket.Min, max)] = fmt.Sprintf("$%.2f", taxableAmount)
-			totalTax += taxableAmount * bracket.Rate
+			taxesOwed := taxableAmount * bracket.Rate
+			taxesByBracket[fmt.Sprintf("Tax band: $%.2f to $%.2f", bracket.Min, max)] = fmt.Sprintf("$%.2f", taxesOwed)
+			totalTax += taxesOwed
 			prev = max
 		}
 	}
